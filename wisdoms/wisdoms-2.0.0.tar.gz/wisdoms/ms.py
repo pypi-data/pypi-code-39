@@ -1,0 +1,248 @@
+# Used for micro-service which developed by nameko
+# install nameko before use
+"""
+    Example::
+
+        from wisdoms.auth import permit
+
+        host = {'AMQP_URI': "amqp://guest:guest@localhost"}
+
+        auth = permit(host)
+
+        class A:
+            @auth
+            def func():
+                pass
+"""
+from nameko.rpc import rpc
+
+from nameko.standalone.rpc import ClusterRpcProxy
+from nameko.standalone.rpc import ServiceRpcProxy
+
+from nameko.exceptions import RpcTimeout, MethodNotFound
+
+from functools import wraps
+from operator import methodcaller
+from wisdoms.utils import xpt_func
+
+default_host = {'AMQP_URI': 'pyamqp://guest:guest@localhost'}
+default_base_service = 'baseUserApp'
+
+
+def rpc_with_timeout(host, service, func, data=None, timeout=8):
+    try:
+        with ServiceRpcProxy(service, host, timeout=timeout) as proxy:
+            if data is not None:
+                res = methodcaller(func, data)(proxy)
+            else:
+                res = methodcaller(func)(proxy)
+            return res
+    except RpcTimeout as e:
+        print(service, ' ~~连接超时 %s sec......，检查是否启动......' % e)
+    except MethodNotFound as e:
+        print('function of this server not found,未找到方法 %s ' % e)
+
+
+def rpc_wrapper(service, func, host=default_host, timeout=8, *args, **kwargs):
+    """
+    rpc包装方法
+
+    :param service:
+    :param func:
+    :param host:
+    :param timeout:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    try:
+        with ServiceRpcProxy(service, host, timeout=timeout) as proxy:
+            res = methodcaller(func, *args, **kwargs)(proxy)
+            return res
+    except RpcTimeout as e:
+        print(service, ' ~~连接超时 %s sec......，检查是否启动......' % e)
+    except MethodNotFound as e:
+        print('function of this server not found,未找到方法 %s ' % e)
+
+
+def ms_base(ms_host=None, base_service=None, func=None, **extra):
+    """
+    返回父类，闭包，传参数ms host
+    :param ms_host:
+    :param base_service
+    :param func
+    :param extra: 额外信息
+    :return:
+    """
+
+    ms_host = ms_host if ms_host else default_host
+    base_service = base_service if base_service else default_base_service
+    func = func if func else 'app2db'
+
+    class MsBase:
+        name = 'ms-base'
+
+        @rpc
+        # @exception()
+        def export_info2db(self):
+            """
+            export information of this service to database
+
+            :param timeout 超时设置
+            :return:
+            """
+            clazz = type(self)
+            service = clazz.name
+            functions = list(clazz.__dict__.keys())
+
+            origin = dict()
+            origin['service'] = service
+            origin['functions'] = functions
+            origin['roles'] = extra.get('roles')
+            origin['name'] = extra.get('name')
+            origin['types'] = extra.get('types', 'free')
+            origin['entrance'] = extra.get('entrance')
+            origin['entrance4app'] = extra.get('entrance4app')
+            origin['entrance4back'] = extra.get('entrance4back')
+
+            rpc_with_timeout(ms_host, base_service, func, origin)
+
+    return MsBase
+
+
+def permit(host=None, **extra):
+    """
+    调用微服务功能之前，进入基础微服务进行权限验证
+
+    :param: host: micro service host
+    :extra: service 基础应用微服务名称
+    :extra: func 用户验证方法名称
+    """
+    host = host if host else default_host
+    base_service = extra.get('service', default_base_service)
+    verify_func = extra.get('func', 'verify')
+
+    def wrapper(f):
+        @wraps(f)
+        def inner(*args, **kwargs):
+            service = args[0].name
+            func = f.__name__
+            token = args[1].get('token')
+
+            res = rpc_with_timeout(host, base_service, verify_func, {'service': service, 'func': func, 'token': token})
+
+            if res:
+                del res['password_hash']
+                del res['partner']
+                args[1]['user'] = res
+                args[1]['uid'] = res.get('id')
+                return f(*args, **kwargs)
+
+            raise Exception('verified failed')
+
+        return inner
+
+    return wrapper
+
+
+def add_uid(host=None, **extra):
+    """
+    用户token 返回用户id
+    :param host:
+    :extra: service 基础应用微服务名称
+    :extra: func 获取用户uid方法名称
+    :return:
+    """
+    host = host if host else default_host
+    base_service = extra.get('service', default_base_service)
+    get_uid_func = extra.get('func', 'get_uid')
+
+    def wrapper(f):
+        @wraps(f)
+        def inner(*args, **kwargs):
+            token = args[1].get('token')
+
+            res = rpc_with_timeout(host, base_service, get_uid_func, {'token': token})
+
+            if res:
+                args[1]['uid'] = res
+                return f(*args, **kwargs)
+
+            raise Exception('verified failed')
+
+        return inner
+
+    return wrapper
+
+
+def add_user(host=None, **extra):
+    """
+    用户token 返回用户信息
+    :param host:
+    :extra: service 基础应用微服务名称
+    :extra: func 获取用户信息方法名称
+    :return:
+    """
+
+    host = host if host else default_host
+    base_service = extra.get('service', default_base_service)
+    get_user_func = extra.get('func', 'get_user')
+
+    def wrapper(f):
+        @wraps(f)
+        def inner(*args, **kwargs):
+            token = args[1].get('token')
+
+            res = rpc_with_timeout(host, base_service, get_user_func, {'token': token})
+
+            if res:
+                del res['password_hash']
+                del res['partner']
+                args[1]['user'] = res
+                return f(*args, **kwargs)
+
+            raise Exception('verified failed')
+
+        return inner
+
+    return wrapper
+
+
+def super_permit(host=None, **extra):
+    """
+
+    :param host:
+    :param extra:
+    :extra: service 基础应用微服务名称
+    :extra: func 验证超级用户
+    :return:
+    """
+    pass
+
+
+def assemble(rpc, service, function1, param1='', *params):
+    str1 = rpc + '.' + service + '.' + function1
+    str2 = '(' + param1
+    for param in params:
+        str2 += ',' + param
+    str2 += ')'
+    return str1 + str2
+
+
+def crf_closure(ms_host):
+    def crf(service, function1, data):
+        with ClusterRpcProxy(ms_host) as rpc:
+            result = eval(assemble('rpc', service, function1, 'data'))
+        return result
+
+    return crf
+
+
+def config_server(host, service='configServerFunc', func='import_config', timeout=10):
+    try:
+        with ServiceRpcProxy(service, host, timeout=timeout) as proxy:
+            res = methodcaller(func)(proxy)
+            print(res)
+            return res
+    except RpcTimeout as e:
+        return {'code': -30, 'desc': '配置中心微服务连接超时，或未启动, 时长:%s' % e, 'data': None}
