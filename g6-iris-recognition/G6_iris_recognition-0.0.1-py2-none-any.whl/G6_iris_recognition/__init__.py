@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+from G6_iris_recognition import (
+    main,
+    encode_iris_model,
+    iris_matching
+)
+
+
+# -*- coding: utf-8 -*-
+
+__author__ = """Gate6"""
+__email__ = 'gate6.info@gate6.com'
+__version__ = '0.0.28'
+
+
+from .main import iris_model_test,iris_model_train
