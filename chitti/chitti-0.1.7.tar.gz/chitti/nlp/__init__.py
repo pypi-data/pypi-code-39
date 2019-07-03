@@ -1,0 +1,2 @@
+
+from chitti.nlp.pretrained_vectors import download_pretrained_vectors
