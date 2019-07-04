@@ -1,0 +1,1 @@
+from .addonmanager import TelethonAddOnManager
