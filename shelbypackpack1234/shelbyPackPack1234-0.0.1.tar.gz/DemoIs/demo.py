@@ -1,0 +1,2 @@
+def DemoPrint():
+	print("HIIIIII")
