@@ -1,0 +1,1 @@
+from shortcuts.Models import *
