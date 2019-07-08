@@ -1,0 +1,12 @@
+from setuptools import setup
+
+setup(
+    name="iamdump",
+    version="0.0.1",
+    author="Raymond Butcher",
+    author_email="ray.butcher@claranet.uk",
+    license="MIT License",
+    py_modules=["iamdump"],
+    entry_points={"console_scripts": ["iamdump=iamdump:cli"]},
+    zip_safe=False,
+)
