@@ -1,0 +1,21 @@
+import os
+import tensorflow as tf
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+
+def printRes():
+    print(os.path.abspath("file1.txt"))
+    print("Hey")
+    file1 = open(os.path.abspath("file1.txt"), "r")
+    sess = tf.compat.v1.Session()
+    a = tf.constant(int(file1.readline(), 10))
+    b = tf.constant(int(file1.readline(), 10))
+    print(sess.run(a + b))
+
+
+def printTheOther():
+    sess = tf.compat.v1.Session()
+    a = tf.constant(2)
+    b = tf.constant(3)
+    print(sess.run(a + b))
