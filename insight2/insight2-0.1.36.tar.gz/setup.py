@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+#############################################
+# File Name: setup.py
+# Author: xingming
+# Mail: huoxingming@gmail.com
+# Created Time:  2015-12-11 01:25:34 AM
+#############################################
+
+
+from setuptools import setup, find_packages
+
+setup(
+    name = "insight2",
+    version = "0.1.36",
+    keywords = ("pathtool","timetool", "magetool", "mage"),
+    description = "time and path tool",
+    long_description = "time and path tool",
+    license = "MIT Licence",
+
+    author = "ark1ee",
+    author_email = "ark1ee@ark.com",
+
+    packages = find_packages(),
+    include_package_data = True,
+    platforms = "any",
+    install_requires = ['chardet']
+)
