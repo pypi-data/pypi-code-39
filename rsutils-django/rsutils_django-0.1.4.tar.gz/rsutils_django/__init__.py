@@ -1,0 +1,1 @@
+name = "rsutils_django"
