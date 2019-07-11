@@ -1,0 +1,22 @@
+from .mynewsflash import MyNewsFlash
+from .oecd import OECD
+# from .skolverket import SKVClient
+from .wikipedia import Wikipedia
+from .worldbank import WorldBank
+from .unsc import UNSC
+from .nobel import NobelClient
+from .hdi import HDI
+from .sipri import SIPRI
+
+
+available = {
+    'mynewsflash': MyNewsFlash,
+    'oecd': OECD,
+    # 'skolverket': SKVClient,
+    'unsc': UNSC,
+    'wikipedia': Wikipedia,
+    'worldbank': WorldBank,
+    'nobel': NobelClient,
+    'hdi': HDI,
+    'sipri': SIPRI
+}
