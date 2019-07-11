@@ -1,0 +1,1 @@
+StyledTextCtrl = object
