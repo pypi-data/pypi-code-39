@@ -1,0 +1,50 @@
+""" Class LocalStorageInterface handles with local file/folder objects
+
+    Class LocalStorageInterface contains
+                                        open method, which is the same python built-in 'open' method
+                                        isfile and isdir methods for checking object status
+                                        listdir method for listing folder's content
+                                        remove method for removing file or folder
+"""
+import os
+import shutil
+
+
+class LocalStorageInterface:
+
+    @staticmethod
+    def open(path, mode: str = 'rt', *args, **kwargs):
+        return open(file=path, mode=mode, *args, **kwargs)
+
+    @staticmethod
+    def isfile(path: str):
+        """Checks file existence for given path"""
+        return os.path.isfile(path)
+
+    @staticmethod
+    def isdir(path: str):
+        """Checks dictionary existence for given path"""
+        return os.path.isdir(path)
+
+    def remove(self, path: str):
+        """Removes file/folder"""
+
+        if self.isfile(path):
+            os.remove(path)
+        elif self.isdir(path):
+            shutil.rmtree(path)
+        else:
+            raise FileNotFoundError(f'No such file or dictionary: {path}')
+
+    def listdir(self, path: str):
+        """Lists all files/folders of dictionary"""
+
+        if not self.isdir(path) and not self.isfile(path):
+            raise FileNotFoundError(f'No such file or dictionary: {path}')
+
+        elif not self.isdir(path):
+            raise NotADirectoryError(f"Not a directory: {path}")
+
+        return os.listdir(path)
+
+
