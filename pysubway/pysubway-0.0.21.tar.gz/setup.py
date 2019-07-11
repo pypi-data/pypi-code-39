@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from setuptools import setup
+from setuptools import find_packages
+
+
+
+install_requires = [
+    'pycryptodome==3.7.3',
+    'requests',
+    'flask',
+    'flask_cors',
+    'flask_restful',
+    'bs4',
+    'openpyxl',
+    'pandas',
+    'xlrd',
+]
+
+excluded=('gitignore.*', 'private_conf.*', )
+
+setup(
+    name='pysubway',
+    version='0.0.21',
+    author='kougazhang',
+    author_email='kougazhang@gmail.com',
+    url='https://github.com/kougazhang',
+    description='build on flask',
+    packages=find_packages(exclude=excluded),
+    install_requires=install_requires,
+)
