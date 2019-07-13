@@ -1,0 +1,2 @@
+from thisamericanlife.models.transcript import Transcripts
+from thisamericanlife.models.episode import Episodes
