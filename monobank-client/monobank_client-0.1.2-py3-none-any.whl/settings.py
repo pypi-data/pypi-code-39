@@ -1,0 +1,7 @@
+MONOBANK_API_TOKEN = None
+
+MONOBANK_API_BASE_URL = 'https://api.monobank.ua'
+MONOBANK_API_CURRENCY_ENDPOINT = MONOBANK_API_BASE_URL + '/bank/currency'
+MONOBANK_API_CLIENT_INFO_ENDPOINT = MONOBANK_API_BASE_URL + '/personal/client-info'
+MONOBANK_API_WEBHOOK_ENDPOINT = MONOBANK_API_BASE_URL + '/personal/webhook'
+MONOBANK_API_STATEMENTS_ENDPOINT = MONOBANK_API_BASE_URL + '/personal/statement/{account}/{from_timestamp}/{to_timestamp}'
