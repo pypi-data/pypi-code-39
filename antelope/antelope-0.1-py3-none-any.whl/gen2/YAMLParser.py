@@ -1,0 +1,178 @@
+# Generated from /home/omry/dev/antelope/python/grammar/YAML.g4 by ANTLR 4.7.2
+# encoding: utf-8
+from __future__ import print_function
+from antlr4 import *
+from io import StringIO
+import sys
+
+
+def serializedATN():
+    with StringIO() as buf:
+        buf.write(u"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3")
+        buf.write(u"\7\26\4\2\t\2\4\3\t\3\3\2\3\2\3\2\3\2\7\2\13\n\2\f\2")
+        buf.write(u"\16\2\16\13\2\3\2\3\2\3\3\3\3\5\3\24\n\3\3\3\2\2\4\2")
+        buf.write(u"\4\2\2\2\25\2\6\3\2\2\2\4\23\3\2\2\2\6\7\7\3\2\2\7\f")
+        buf.write(u"\5\4\3\2\b\t\7\4\2\2\t\13\5\4\3\2\n\b\3\2\2\2\13\16\3")
+        buf.write(u"\2\2\2\f\n\3\2\2\2\f\r\3\2\2\2\r\17\3\2\2\2\16\f\3\2")
+        buf.write(u"\2\2\17\20\7\5\2\2\20\3\3\2\2\2\21\24\5\2\2\2\22\24\7")
+        buf.write(u"\6\2\2\23\21\3\2\2\2\23\22\3\2\2\2\24\5\3\2\2\2\4\f\23")
+        return buf.getvalue()
+
+
+class YAMLParser ( Parser ):
+
+    grammarFileName = "YAML.g4"
+
+    atn = ATNDeserializer().deserialize(serializedATN())
+
+    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+
+    sharedContextCache = PredictionContextCache()
+
+    literalNames = [ u"<INVALID>", u"'{'", u"','", u"'}'" ]
+
+    symbolicNames = [ u"<INVALID>", u"<INVALID>", u"<INVALID>", u"<INVALID>", 
+                      u"INT", u"WS" ]
+
+    RULE_init = 0
+    RULE_value = 1
+
+    ruleNames =  [ u"init", u"value" ]
+
+    EOF = Token.EOF
+    T__0=1
+    T__1=2
+    T__2=3
+    INT=4
+    WS=5
+
+    def __init__(self, input, output=sys.stdout):
+        super(YAMLParser, self).__init__(input, output=output)
+        self.checkVersion("4.7.2")
+        self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
+        self._predicates = None
+
+
+
+
+    class InitContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(YAMLParser.InitContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def value(self, i=None):
+            if i is None:
+                return self.getTypedRuleContexts(YAMLParser.ValueContext)
+            else:
+                return self.getTypedRuleContext(YAMLParser.ValueContext,i)
+
+
+        def getRuleIndex(self):
+            return YAMLParser.RULE_init
+
+        def enterRule(self, listener):
+            if hasattr(listener, "enterInit"):
+                listener.enterInit(self)
+
+        def exitRule(self, listener):
+            if hasattr(listener, "exitInit"):
+                listener.exitInit(self)
+
+
+
+
+    def init(self):
+
+        localctx = YAMLParser.InitContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 0, self.RULE_init)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 4
+            self.match(YAMLParser.T__0)
+            self.state = 5
+            self.value()
+            self.state = 10
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==YAMLParser.T__1:
+                self.state = 6
+                self.match(YAMLParser.T__1)
+                self.state = 7
+                self.value()
+                self.state = 12
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+            self.state = 13
+            self.match(YAMLParser.T__2)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ValueContext(ParserRuleContext):
+
+        def __init__(self, parser, parent=None, invokingState=-1):
+            super(YAMLParser.ValueContext, self).__init__(parent, invokingState)
+            self.parser = parser
+
+        def init(self):
+            return self.getTypedRuleContext(YAMLParser.InitContext,0)
+
+
+        def INT(self):
+            return self.getToken(YAMLParser.INT, 0)
+
+        def getRuleIndex(self):
+            return YAMLParser.RULE_value
+
+        def enterRule(self, listener):
+            if hasattr(listener, "enterValue"):
+                listener.enterValue(self)
+
+        def exitRule(self, listener):
+            if hasattr(listener, "exitValue"):
+                listener.exitValue(self)
+
+
+
+
+    def value(self):
+
+        localctx = YAMLParser.ValueContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_value)
+        try:
+            self.state = 17
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [YAMLParser.T__0]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 15
+                self.init()
+                pass
+            elif token in [YAMLParser.INT]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 16
+                self.match(YAMLParser.INT)
+                pass
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+
+
+
