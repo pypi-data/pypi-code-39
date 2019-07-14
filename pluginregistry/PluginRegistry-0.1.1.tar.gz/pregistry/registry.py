@@ -1,0 +1,211 @@
+import logging
+import pkg_resources
+
+from .classproperty import classproperty
+from .loader import PluginLoader
+
+_logger = logging.getLogger(__name__)
+
+
+class RegistryMeta(type):
+    def __prepare__(metacls, *arg, **kw):
+        return {"_plugins": {}}
+
+    def __new__(metacls, clsname, bases, dct, **kw):
+        dct["__getattr__"] = classmethod(metacls.__getattr__)
+        dct["__getitem__"] = classmethod(metacls.__getitem__)
+        dct["__contains__"] = classmethod(metacls.__contains__)
+        dct["__dir__"] = classmethod(metacls.__dir__)
+        dct["__str__"] = classmethod(metacls.__str__)
+        dct["get"] = classmethod(metacls.get)
+
+        return super().__new__(metacls, clsname, bases, dct, **kw)
+
+    def __getattr__(cls, key):
+        subclasses = {_._name: _ for _ in cls.__subclasses__()}
+        if key in subclasses:
+            return subclasses[key]
+        elif key in cls._plugins:
+            return cls._plugins[key]
+        else:
+            raise AttributeError(
+                f"Registry '{cls.path}' does not contain a registry/plugin '{key}'"
+            )
+
+    def __getitem__(cls, key):
+        subclasses = {_._name: _ for _ in cls.__subclasses__()}
+        if key in subclasses:
+            return subclasses[key]
+        elif key in cls._plugins:
+            return cls._plugins[key]
+        else:
+            raise KeyError(f"Key '{key}' not found in class '{cls._name}'")
+
+    def __dir__(cls):
+        return (
+            set(super().__dir__())
+            | set(_._name for _ in cls.__subclasses__())
+            | cls._plugins.keys()
+        )
+
+    def __contains__(cls, item):
+        return item in cls._plugins or item in {_._name for _ in cls.__subclasses__()}
+
+    def get(cls, path, default=None):
+        if type(path) != str:
+            path = ".".join(path)
+
+        if path == cls.path:
+            return cls
+        else:
+            parts = path.replace(f"{cls.path}.", "").split(".")
+
+            if not parts[0] in cls:
+                return default
+            elif len(parts) == 1:
+                return cls[parts[0]]
+            else:
+                return cls[parts[0]].get(parts[1:])
+
+    def __str__(cls):  # pragma: no cover
+        return f"<Plugin Registry '{cls.path}'>"
+
+
+class Registry(metaclass=RegistryMeta):
+    _entry_point_group = "Registry"
+    _base = True
+    _loader = None
+    _name = __name__
+
+    def __init_subclass__(cls, *, base=False):
+        cls._base = base
+        cls._name = cls.__name__
+
+    @classproperty
+    def is_registry(self):
+        return True
+
+    @classproperty
+    def is_plugin(self):
+        return False
+
+    @classmethod
+    def load_entry_point(cls, item):  # pragma: no cover
+        """
+        Attempt to load a module based on a plugin registry value
+        """
+        key = f"{cls.path}.{item}"
+        module = None
+        for entry_point in pkg_resources.iter_entry_points(
+            group=cls._entry_point_group, name=key
+        ):
+            module = entry_point.load()
+
+        if item in cls:
+            return cls[item]
+        else:
+            raise AttributeError(
+                f"Attempt to auto-load '{item}' via entry-point failed"
+            )
+
+    @classproperty
+    def registries(cls):
+        return sorted(_._name for _ in cls.__subclasses__())
+
+    @classproperty
+    def registry(cls):
+        if cls.parent is object or cls._base:
+            return None
+        else:
+            return cls.parent
+
+    @classproperty
+    def plugins(cls):
+        return sorted(cls._plugins.keys())
+
+    @classproperty
+    def path(cls):
+        if cls._base or cls.__base__ is object:
+            return cls._name
+        else:
+            return f"{cls.__base__.path}.{cls._name}"
+
+    @classproperty
+    def plugin_tree(cls):  # pragma: no cover
+        return sorted(
+            [_.path for _ in cls._plugins.values()]
+            + [path for tree in cls.__subclasses__() for path in tree.plugin_tree]
+        )
+
+    @classproperty
+    def registry_tree(cls):  # pragma: no cover
+        return sorted(
+            [cls.path]
+            + [path for tree in cls.__subclasses__() for path in tree.registry_tree]
+        )
+
+    @classproperty
+    def tree(cls):  # pragma: no cover
+        return sorted(cls.registry_tree + cls.plugin_tree)
+
+    @classproperty
+    def parent(cls):
+        return cls.__base__
+
+    @classproperty
+    def entry_point(cls):
+        try:
+            dist = pkg_resources.get_distribution(cls.__module__.split(".")[0])
+        except pkg_resources.DistributionNotFound:
+            dist = None
+
+        return pkg_resources.EntryPoint(
+            cls.path, cls.__module__, (cls._name,), dist=dist
+        )
+
+    @classmethod
+    def entry_points(cls, module=None, *, align=True):
+        entry_points = [
+            cls.get(_).entry_point
+            for _ in cls.tree
+            if cls.get(_).entry_point is not None
+        ]
+
+        if not align and module is None:
+            return sorted([str(_) for _ in entry_points])
+
+        else:
+            ep_parts = [str(_).split(" = ") for _ in entry_points]
+            filtered = list(
+                filter(lambda _: module is None or _[1].startswith(module), ep_parts)
+            )
+            length = max(len(_[0]) for _ in filtered)
+            return sorted([f"{_[0]:{length}s} = {_[1]}" for _ in filtered])
+
+    @classmethod
+    def print_entry_points(
+        cls, module=None, *, align=True, variable="entry_points"
+    ):  # pragma: no cover
+        eps = cls.entry_points(module, align=align)
+        indented = "\n".join(f"{' ':4}{_}" for _ in eps)
+        print(f"""{variable} = [\n{indented}\n]""")
+
+    @classmethod
+    def load_entry_points(cls, group=None, exclude=[]):  # pragma: no cover
+        if group is None:
+            group = cls._entry_point_group
+
+        for ep in pkg_resources.iter_entry_points(group=group):
+            if cls.get(ep.name) is None:
+                module = ep.load()
+
+    @classmethod
+    def import_enable(self):  # pragma: no cover
+        if self._loader is None:
+            self._loader = PluginLoader(self)
+        self._loader.enable()
+
+    @classmethod
+    def import_disable(self):  # pragma: no cover
+        if self._loader is not None:
+            self._loader.disable()
