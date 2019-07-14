@@ -1,0 +1,1 @@
+name = 'monobank_client'
