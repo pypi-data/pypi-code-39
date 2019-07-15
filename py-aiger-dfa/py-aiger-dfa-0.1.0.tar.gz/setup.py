@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+from distutils.core import setup
+
+packages = \
+['aiger_dfa']
+
+package_data = \
+{'': ['*']}
+
+install_requires = \
+['attrs>=19.1,<20.0',
+ 'bidict>=0.18.0,<0.19.0',
+ 'dfa>=0.3.2,<0.4.0',
+ 'funcy>=1.12,<2.0',
+ 'py-aiger-bv>=0.5.4,<0.6.0',
+ 'py-aiger>=3.3,<4.0']
+
+setup_kwargs = {
+    'name': 'py-aiger-dfa',
+    'version': '0.1.0',
+    'description': 'Library for moving between sequential circuits AIGs and DFAs.',
+    'long_description': '# py-aiger-dfa\nPython library for converting between AIG circuits and DFAs.\n\n# Installation\n\nIf you just need to use `aiger_dfa`, you can just run:\n\n`$ pip install py-aiger-dfa`\n\nFor developers, note that this project uses the\n[poetry](https://poetry.eustace.io/) python package/dependency\nmanagement tool. Please familarize yourself with it and then\nrun:\n\n`$ poetry install`\n\n# Usage\n\nThe main entry points for using this library are the `dfa2aig` and\n`aig2dfa` functions. DFAs are represented using the\n[dfa](https://github.com/mvcisback/dfa) package. Familiarity with the\n`dfa`, `py-aiger`, and `py-aiger-bv` packages is assumed.\n\n\n## DFA to AIG\n\nAn example of going from a `DFA` to an `AIG` object\nis shown below.\n\n```python\nfrom dfa import DFA\nfrom aiger_dfa import aig2dfa, dfa2aig\n\nmy_dfa = DFA(\n    start=0,\n    inputs={0, 1},\n    label=lambda s: (s % 4) == 3,\n    transition=lambda s, c: (s + c) % 4,\n)\nmy_aig, relabels = dfa2aig(my_dfa)\n```\n\nNow `circ` is an `AIG` and `relabels` is a mapping from the inputs,\nstates, and outputs of `my_dfa` to their **1-hot** encoded\ncounterparts in `my_aig`.\n\n## AIG to DFA\n\nTODO\n',
+    'author': 'Marcell Vazquez-Chanlatte',
+    'author_email': 'mvc@linux.com',
+    'url': 'https://github.com/mvcisback/py-aiger-dfa',
+    'packages': packages,
+    'package_data': package_data,
+    'install_requires': install_requires,
+    'python_requires': '>=3.7,<4.0',
+}
+
+
+setup(**setup_kwargs)
