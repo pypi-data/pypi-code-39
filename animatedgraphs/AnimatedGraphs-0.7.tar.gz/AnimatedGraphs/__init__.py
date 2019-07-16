@@ -1,0 +1,1 @@
+from AnimatedGraphs import AnimatedBar
