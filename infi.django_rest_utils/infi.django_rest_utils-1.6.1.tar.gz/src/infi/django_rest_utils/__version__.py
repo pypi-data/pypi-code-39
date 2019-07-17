@@ -1,0 +1,11 @@
+__version__ = "1.6.1"
+__git_commiter_name__ = "Itay Galea"
+__git_commiter_email__ = "igalea@infinidat.com"
+__git_branch__ = u'(HEAD detached at v1.6.1)'
+__git_remote_tracking_branch__ = '(No remote tracking)'
+__git_remote_url__ = '(Not remote tracking)'
+__git_head_hash__ = 'a6399d17f97242187122de76d65c9e1976fa98bf'
+__git_head_subject__ = u'Finished Release v1.6.1'
+__git_head_message__ = u''
+__git_dirty_diff__ = u''
+__git_commit_date__ = '2019-07-17 14:55:35'
