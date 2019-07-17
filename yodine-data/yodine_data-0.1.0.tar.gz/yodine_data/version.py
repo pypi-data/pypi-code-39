@@ -1,0 +1,2 @@
+VERSION_STR = "0.1.0"
+VERSION_TUPLE = (0, 1, 0)
