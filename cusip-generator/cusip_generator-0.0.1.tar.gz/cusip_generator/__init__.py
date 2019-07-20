@@ -1,0 +1,1 @@
+name = "cusip_generator"
