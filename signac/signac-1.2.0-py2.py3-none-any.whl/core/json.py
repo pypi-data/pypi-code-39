@@ -1,0 +1,81 @@
+# Copyright (c) 2018 The Regents of the University of Michigan
+# All rights reserved.
+# This software is licensed under the BSD 3-Clause License.
+from __future__ import absolute_import
+import logging
+
+logger = logging.getLogger(__name__)
+msg = "Using '{}' package for JSON encoding/decoding."
+
+try:
+    import numpy
+    NUMPY = True
+except ImportError:
+    NUMPY = False
+
+try:
+    import rapidjson as json
+    from rapidjson import Encoder
+    try:
+        # Defined for rapidjson >= 0.7.1
+        from rapidjson import JSONDecodeError
+    except ImportError:
+        # rapidjson < 0.7.1 raises a ValueError
+        JSONDecodeError = ValueError
+
+    class JSONEncoder(Encoder):
+        encode = Encoder.__call__
+
+    logger.debug(msg.format('rapidjson'))
+except ImportError:
+    import json
+    from json import JSONEncoder
+    try:
+        from json.decoder import JSONDecodeError
+    except ImportError:
+        # JSONDecodeError doesn't exist for Python 2
+        JSONDecodeError = ValueError
+
+    logger.debug(msg.format('json'))
+
+
+_has_default = hasattr(JSONEncoder, 'default')
+
+
+class CustomJSONEncoder(JSONEncoder):
+    """Attempt to JSON-encode objects beyond the default supported types.
+
+    This encoder will attempt to obtain a JSON-serializable representation of
+    an object that is otherwise not serializable, by calling the object's
+    `_as_dict()` method.
+    """
+    def default(self, o):
+        if NUMPY:
+            if isinstance(o, numpy.number):
+                return o.item()
+            elif isinstance(o, numpy.ndarray):
+                return o.tolist()
+        try:
+            return o._as_dict()
+        except AttributeError:
+            if _has_default:
+                # Call the super method, which probably raise a TypeError.
+                return super(CustomJSONEncoder, self).default(o)
+            else:
+                raise TypeError(
+                    "Unable to serialize object '{}'.".format(o))
+
+
+def loads(s):
+    return json.loads(s)
+
+
+def load(s):
+    return json.load(s)
+
+
+def dumps(o, sort_keys=False, indent=None):
+    return CustomJSONEncoder(sort_keys=sort_keys, indent=indent).encode(o)
+
+
+__all__ = ['loads', 'load', 'dumps', 'JSONDecodeError']
