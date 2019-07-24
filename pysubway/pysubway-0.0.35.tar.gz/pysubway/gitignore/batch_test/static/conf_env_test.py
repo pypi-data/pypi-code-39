@@ -1,0 +1,56 @@
+"""
+您好：
+开通产品：布尔数据风险评估报告
+接口demo：https://www.yuque.com/docs/share/8fa12ff1-6647-401d-9352-78ac6c818c9e
+
+文档：https://www.yuque.com/docs/share/d7a1a784-2813-494b-bac7-7ac62c49fe44
+
+测试环境信息:
+
+测试环境适用与接入方调试加解密，返回结果非真实数据
+
+接口地址:http://sandbox.shouxin168.net/api/lightning/product/query
+
+测试账号：d6518f1e-9270-11e9-890c-9801a79f5a77
+aes秘钥:Q0ymUIe1t26ZfG7s
+
+rsa公钥：
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0KpGcWs8E5zprE9TXYw5
+2+rKxdthhwFZERzPAIIehKWL1GcDDNTRFmxRJDvjcIv+vhuaQfYZYQ+jC9b52b3E
+4pVdhfojNxJAd0PJWOjIEZXjhEpPlfiDp0TrjcKsO4ViwYu8A2UyV/b/9eZiipFx
+0LmWbN7ZAZjJD655p5kJPAPjU2pT6yy/slBqaJWIM5qbKq2qH4YOq47cEHYZ0a/c
+TJ3vGzlLVao5OVVhHg7T2pIYwqcoI1Aexx93L6zrDFGC0bCagDgDyzkeCgrMY+2P
+Eq8ISiCOmLEb9hH05c8vNxUgj8olzBp/7J0PITjQOj/2GnR656xCLE36mfpZAv2a
+bwIDAQAB
+-----END PUBLIC KEY-----
+rsa私钥（PKCS#8）
+-----BEGIN PRIVATE KEY-----
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQqkZxazwTnOms
+T1NdjDnb6srF22GHAVkRHM8Agh6EpYvUZwMM1NEWbFEkO+Nwi/6+G5pB9hlhD6ML
+1vnZvcTilV2F+iM3EkB3Q8lY6MgRleOESk+V+IOnROuNwqw7hWLBi7wDZTJX9v/1
+5mKKkXHQuZZs3tkBmMkPrnmnmQk8A+NTalPrLL+yUGpolYgzmpsqraofhg6rjtwQ
+dhnRr9xMne8bOUtVqjk5VWEeDtPakhjCpygjUB7HH3cvrOsMUYLRsJqAOAPLOR4K
+Csxj7Y8SrwhKII6YsRv2EfTlzy83FSCPyiXMGn/snQ8hONA6P/YadHrnrEIsTfqZ
++lkC/ZpvAgMBAAECggEBAMu65GpKi+6OTqwZC0kT503r0S0bA/7fdwm5OfbCFG/o
+fjzUkurNQpQFD7gz7N1vIjqVEqiCUscskEG4FFve58NemGB+GDHl1SFdAtKW/PgG
+g4wfTdMcP9Zp+R6Ays6WbhSQjPI3tM6j78czuFSYqypieRc1AWWIug5giJD1X0nC
+sX9ZZolr4tTk2RqykbiAVVmX1L2aezE/FLoyuqdZ8kWQXlJZS3ldOvECTy0fuV0v
+sJ/Mmm27efkONTlcBNzLr8blhuKmQbTC0IBeUoOiP7lXcK+2gYbf9JVEj56MBVYs
+0vyPNRB9gy/HPQlov05ZieIH87za3oTz5Vb+HTb9+CECgYEA+MGDiX04O7kAD5s5
+UXY5OeTgviilPdBm7JpsiezHDKN7S3oy/4P5GJ/eei8uVkCdrN01h35pMiDq/jkm
+0UihXJjaZ2+MHAhMM7l2AONT7MzAisRnnFUeyVYaCRhUJfwrl+ERBP2vHCkNa34O
+JmdL8XQf7Met+KcYSKLF8qLYFL8CgYEA1r3iA6RP/0F8XyQRL1aF9cJVQpWPwI/V
+6jLq+v/mhzlTdy5c4u9nMvhh+yjUPwZomQshby9MbRv0x0jdE9Hnn03lUcVJocZv
+owUBr34qIkC3x3LhwPC+rIa3/x9FSiN2fGP2lADAXDmnxt+6UlqX5wuhq/jIbT+R
+55zsrjWxdlECgYAvAlr6Q5i56JczW9E0LNRZtYAnT4USrmyU8AXs9rsTD14AgIJc
+uTL8zVF846etEx75CQDRrzjwCTp/eot0Z3ZfCl/TxkfDEGpeKAE937f/ex4z2zP9
+XjSoNcZLy7YzS3lthVHzEIHkH3nyw2qnJUQ7yAc0dvPQlrtHFsOzu8R7/wKBgD13
+dqVCOB/BV99HzJ93LbsN2CfJ9a7RvRJfZsFX1F2qfAimPbI7gpelXy5sHmy34eLE
+u9o+eKrWkLcmVRmiQKFpw5UnWo8y5KuN+FCKVXcefTxa1uHKR1nM6gfdpJC3G+g5
+GNB+cpEzc6HKUmPWSJq6ypkWChCzXIkmctzew6AxAoGBANq35XF3HxB7f/xmekO7
+kJBxT6TUZCMlOZlM5xvFkF4Uqsz1RGq8N1WTUzCDtlEHQknqwuB7HMC2LF0OHgjo
+s+Zs05IhooXCXsVlkyxEgf+H8Po8WU//7bjnsJ3rxrHJxVFKVQrcX72nsMbYGkvy
+HxtoEnwMwF1bjqjgOqB3m+uR
+-----END PRIVATE KEY-----
+"""
