@@ -1,0 +1,1 @@
+from py_cmd_app.main import CMDApp
