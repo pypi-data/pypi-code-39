@@ -1,0 +1,7 @@
+__title__ = 'infynipy'
+__description__ = 'API Wrapper for the Infynity CRM.'
+__url__ = 'https://github.com/beanpuppy/infynipy'
+__version__ = '0.1.0'
+__author__ = 'Justin Duch'
+__author_email__ = 'justin@justinduch.com'
+__license__ = 'MIT'
