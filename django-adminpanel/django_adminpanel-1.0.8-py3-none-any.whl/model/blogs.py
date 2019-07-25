@@ -1,0 +1,21 @@
+from django.db import models
+from django.utils import timezone
+class Blogs(models.Model):
+	title = models.CharField(max_length=250)
+	blog_url = models.CharField(max_length=250)
+	blog_excerpt = models.CharField(max_length=250)
+	blog_status = models.CharField(max_length=50,default="publish")
+	comment_status = models.CharField(max_length=50,default="yes")
+	blog_password = models.CharField(max_length=50,default="")
+	blog_author = models.IntegerField(default=0)
+	blog_parent = models.IntegerField(default=0)
+	blog_order = models.IntegerField(default=0)
+	blog_comment = models.IntegerField(default=0)
+	blog_cat = models.IntegerField(default=0)
+	blog_tag = models.IntegerField(default=0)
+	blog_description = models.TextField(default="")
+	meta_title = models.CharField(max_length=250,default="")
+	meta_keyword = models.CharField(max_length=500,default="")
+	meta_description = models.TextField(default="")
+	blog_created= models.DateTimeField('created',default=timezone.now)
+	blog_updated= models.DateTimeField('created',default=timezone.now)
