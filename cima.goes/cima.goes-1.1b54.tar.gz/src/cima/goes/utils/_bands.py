@@ -1,0 +1,26 @@
+from typing import List
+from enum import Enum
+
+
+class band(Enum):
+    BLUE = 1
+    RED = 2
+    VEGGIE = 3
+    CIRRUS = 4
+    SNOW_ICE = 5
+    CLOUD_PARTICLE_SIZE = 6
+    SHORTWAVE_WINDOW = 7
+    UPPER_LEVEL_TROPOSPHERIC_WATER_VAPOR = 8
+    MID_LEVEL_TROPOSPHERIC_WATER_VAPOR = 9
+    LOWER_LEVEL_WATER_VAPOR = 10
+    CLOUD_TOP_PHASE = 11
+    OZONE = 12
+    CLEAN_LONGWAVE_WINDOW = 13
+    IR_LONGWAVE_WINDOW = 14
+    DIRTY_LONGWAVE_WINDOW = 15
+    CO2_LONGWAVE_INFRARED = 16
+
+
+Bands = List[band]
+
+
