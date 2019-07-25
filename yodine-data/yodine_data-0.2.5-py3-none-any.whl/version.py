@@ -1,0 +1,4 @@
+VERSION_TUPLE = (0, 2, 5)
+VERSION_POSTFIX = ''
+
+VERSION_STR = '.'.join(str(v) for v in VERSION_TUPLE) + VERSION_POSTFIX
